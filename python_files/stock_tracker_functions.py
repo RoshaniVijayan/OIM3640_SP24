@@ -10,9 +10,12 @@ watchlist = 'AMZN NFLX META GOOG'.split()
 def track(watchlist):
     start = time()
     while True:
-        for symbol in watchlist:
-            print(f"{symbol:8}{yf.Ticker(symbol).history()['Close'][-1]:.2f}")
-            sleep(1)
+        try:
+            for symbol in watchlist:
+                print(f"{symbol:8}{yf.Ticker(symbol).history()['Close'][-1]:.2f}")
+                sleep(1)
+        except:
+            print("not found")
         if time() - start >= 15:
             prompt = input("Enter to continue, any key to quit: ")
             start = time()
@@ -26,4 +29,5 @@ def read_directory():
 read_directory()
 print(os.listdir('watchlists'))
 
-#track(watchlist)
+track(watchlist)
+
