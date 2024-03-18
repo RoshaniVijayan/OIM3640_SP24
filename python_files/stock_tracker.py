@@ -1,4 +1,5 @@
-from time import sleep
+import os
+from time import sleep, time
 import sys
 import yfinance as yf
 
@@ -13,9 +14,39 @@ def display_menu():
     """)
 
 def track(watchlist):
-    for second in range(10):
-        print(f"{yf.Ticker('AAPL').history()['Close'][-1]:.2f}")
-        sleep(1)
+    start = time()
+    while True:
+        try:
+            for symbol in watchlist:
+                print(f"{symbol:8}{yf.Ticker(symbol).history()['Close'][-1]:.2f}")
+                sleep(1)
+        except:
+            print("not found")
+        if time() - start >= 15:
+            prompt = input("Enter to continue, any key to quit: ")
+            start = time()
+            if prompt:
+                break
+
+def read_directory():
+    if not os.path.exists('watchlists'):
+        print("No watchlist directory, creating")
+        os.mkdir('watchlists')
+    else:
+        files = os.listdir('watchlists')
+        if not files:
+            print("No saved list")
+        else:
+            for number, file in enumerate(files, 1):
+                print(f"{number} - {file[:-10]}")
+            return files
+
+
+def choose_list():
+    lists = read_directory()
+    choice = int(input("Enter watchlist number: "))
+    file = lists[choice- 1]
+    return open(f"watchlists/{file}" ,'r').read().split()
 
 
 def add_list():
@@ -38,10 +69,11 @@ actions = {'2': add_list, '3': edit_list, '4': delete}
 def main():
     print("Welcome to StockTraker!")
     while True:
-        watchlist = 'AMZN NFLX FB GOOG'.split()
+
         display_menu()
         choice = input("Enter a menu number: ")
         if choice == '1':
+            watchlist = choose_list()
             track(watchlist)
         elif choice in '234':
             actions[choice]()
