@@ -11,7 +11,7 @@ st.sidebar.header("Parameters")
 x = int(st.sidebar.text_input("Number of iterations: "))
 norms = np.random.randn(x)
 fig, axes = plt.subplots(figsize=(4,2))
-axes.hist(norms, bins=50, edgecolor='w')
+axes.(norms, bins=50, edgecolor='w')
 st.pyplot(fig)
 
 
